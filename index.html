@@ -459,6 +459,48 @@
     .gallery-caption-title { font-size: 1.1rem; color: var(--warm-white); }
     .gallery-caption-loc { font-family: 'Barlow Condensed', sans-serif; font-size: 0.9rem; color: var(--amber); }
     .gallery-cta { text-align: center; margin-top: 3rem; }
+
+    /* ── Featured staggered grid (All view) ── */
+    #featured-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: 340px 340px 280px;
+      gap: 10px;
+      margin-bottom: 2rem;
+    }
+    #featured-grid .feat-item {
+      position: relative; overflow: hidden; border-radius: 10px;
+      cursor: none;
+    }
+    #featured-grid .feat-item img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.22s ease;
+    }
+    #featured-grid .feat-item:hover img { transform: scale(1.05); }
+    #featured-grid .feat-item .gallery-overlay { opacity: 0; transition: opacity 0.12s ease; }
+    #featured-grid .feat-item:hover .gallery-overlay { opacity: 1; }
+    /* Grid placement */
+    .feat-1 { grid-column: 1 / 3; grid-row: 1 / 3; }
+    .feat-2 { grid-column: 3;     grid-row: 1 / 3; }
+    .feat-3 { grid-column: 4;     grid-row: 1; }
+    .feat-4 { grid-column: 4;     grid-row: 2; }
+    .feat-5 { grid-column: 1;     grid-row: 3; }
+    .feat-6 { grid-column: 2 / 4; grid-row: 3; }
+    .feat-7 { grid-column: 4;     grid-row: 3; }
+    /* Mobile: stack as single column */
+    @media (max-width: 767px) {
+      #featured-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: repeat(5, 200px);
+      }
+      .feat-1 { grid-column: 1 / 3; grid-row: 1; }
+      .feat-2 { grid-column: 1;     grid-row: 2 / 4; }
+      .feat-3 { grid-column: 2;     grid-row: 2; }
+      .feat-4 { grid-column: 2;     grid-row: 3; }
+      .feat-5 { grid-column: 1;     grid-row: 4; }
+      .feat-6 { grid-column: 2;     grid-row: 4; }
+      .feat-7 { grid-column: 1 / 3; grid-row: 5; }
+    }
     .btn-outline-amber {
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 700; font-size: 1rem;
@@ -1104,7 +1146,76 @@
       <button class="filter-btn" data-filter="decks">Decks</button>
       <button class="filter-btn" data-filter="gates">Gates</button>
     </div>
-    <div class="gallery-grid" id="gallery-grid">
+    <!-- ══ FEATURED SHOWCASE — shown in All view ══ -->
+    <div id="featured-grid">
+
+      <!-- 1. HERO — large left block -->
+      <div class="feat-item feat-1">
+        <img src="assets/featured-6.jpg" alt="Composite Deck with Glass Railing" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Composite Deck · Glass Railing</p>
+          <p class="gallery-caption-loc">GTA, ON · Deck</p>
+        </div></div>
+      </div>
+
+      <!-- 2. TALL — centre column -->
+      <div class="feat-item feat-2">
+        <img src="assets/featured-7.jpg" alt="Cedar Deck with Pergola and Privacy Screen" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Cedar Deck · Pergola & Privacy Screen</p>
+          <p class="gallery-caption-loc">GTA, ON · Deck</p>
+        </div></div>
+      </div>
+
+      <!-- 3. SMALL top-right -->
+      <div class="feat-item feat-3">
+        <img src="assets/featured-2.jpg" alt="Aluminum Fence with Stone Pillar" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Aluminum Fence · Stone Pillar</p>
+          <p class="gallery-caption-loc">GTA, ON · Aluminum</p>
+        </div></div>
+      </div>
+
+      <!-- 4. SMALL mid-right -->
+      <div class="feat-item feat-4">
+        <img src="assets/featured-3.jpg" alt="Cedar Gate with Pergola Header" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Cedar Gate · Pergola Header</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <!-- 5. SMALL bottom-left -->
+      <div class="feat-item feat-5">
+        <img src="assets/featured-5.jpg" alt="Double-Level Cedar Deck and Front Porch" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Double-Level Cedar Deck & Porch</p>
+          <p class="gallery-caption-loc">GTA, ON · Deck</p>
+        </div></div>
+      </div>
+
+      <!-- 6. WIDE bottom-centre -->
+      <div class="feat-item feat-6">
+        <img src="assets/featured-4.jpg" alt="Cedar Fence Townhouse Development" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Cedar Fence · Townhouse Development</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <!-- 7. SMALL bottom-right -->
+      <div class="feat-item feat-7">
+        <img src="assets/featured-1.jpg" alt="Chain Link Fence on Retaining Wall" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Chain Link · Retaining Wall</p>
+          <p class="gallery-caption-loc">GTA, ON · Chain Link</p>
+        </div></div>
+      </div>
+
+    </div>
+    <!-- ══ end FEATURED SHOWCASE ══ -->
+
+    <div class="gallery-grid" id="gallery-grid" style="display:none;">
 
       <!-- ════ CEDAR FENCES ════ -->
       <div class="gallery-item reveal" data-cat="cedar">
@@ -2156,32 +2267,31 @@
   }, { threshold: 0.5 });
   statEls.forEach(el => statObserver.observe(el));
 
-  // Gallery filter + Show More
-  const filterBtns    = document.querySelectorAll('.filter-btn');
-  const galleryItems  = document.querySelectorAll('.gallery-item');
-  const showMoreWrap  = document.getElementById('gallery-show-more-wrap');
-  const showMoreBtn   = document.getElementById('gallery-show-more');
-  const INITIAL_COUNT = 12;
-  let   allShown      = false;
+  // Gallery filter + Featured showcase + Show More
+  const filterBtns   = document.querySelectorAll('.filter-btn');
+  const galleryItems = document.querySelectorAll('.gallery-item');
+  const galleryGrid  = document.getElementById('gallery-grid');
+  const featuredGrid = document.getElementById('featured-grid');
+  const showMoreWrap = document.getElementById('gallery-show-more-wrap');
+  const showMoreBtn  = document.getElementById('gallery-show-more');
 
   function applyFilter(cat) {
-    allShown = false;
-    let visible = [];
-    galleryItems.forEach(item => {
-      const match = cat === 'all' || item.dataset.cat === cat;
-      item.classList.toggle('hidden', !match);
-      if (match) visible.push(item);
-    });
-
-    if (cat === 'all' && visible.length > INITIAL_COUNT) {
-      // Hide everything beyond the first INITIAL_COUNT
-      visible.forEach((item, i) => {
-        if (i >= INITIAL_COUNT) item.classList.add('hidden');
-      });
-      showMoreBtn.textContent = 'Show All Photos (' + visible.length + ')';
+    if (cat === 'all') {
+      // Show the staggered featured showcase, hide the regular grid
+      featuredGrid.style.display = 'grid';
+      galleryGrid.style.display  = 'none';
+      showMoreBtn.textContent    = 'Show All Photos (' + galleryItems.length + ')';
       showMoreWrap.style.display = 'block';
+      // Reset all items to visible for when Show All is clicked
+      galleryItems.forEach(item => item.classList.remove('hidden'));
     } else {
+      // Hide featured, show regular grid filtered by category
+      featuredGrid.style.display = 'none';
+      galleryGrid.style.display  = '';
       showMoreWrap.style.display = 'none';
+      galleryItems.forEach(item => {
+        item.classList.toggle('hidden', item.dataset.cat !== cat);
+      });
     }
   }
 
@@ -2194,12 +2304,13 @@
   });
 
   showMoreBtn.addEventListener('click', () => {
+    featuredGrid.style.display = 'none';
+    galleryGrid.style.display  = '';
     galleryItems.forEach(item => item.classList.remove('hidden'));
     showMoreWrap.style.display = 'none';
-    allShown = true;
   });
 
-  // Start with All view showing first 12
+  // Start with featured All view
   applyFilter('all');
 
   // Contact form
