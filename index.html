@@ -86,12 +86,6 @@
       0%   { transform: scaleX(0); transform-origin: left; }
       100% { transform: scaleX(1); transform-origin: left; }
     }
-    @keyframes drift-up {
-      0%   { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-      10%  { opacity: 0.3; }
-      90%  { opacity: 0.3; }
-      100% { transform: translateY(-100px) rotate(15deg); opacity: 0; }
-    }
     @keyframes scroll-carousel {
       0%   { transform: translateX(0); }
       100% { transform: translateX(-50%); }
@@ -259,32 +253,6 @@
           rgba(10,10,10,0.82) 100%
         );
     }
-    .floating-plank {
-      position: absolute; width: 12px; height: 64px;
-      background: rgba(139,74,31,0.2); border-radius: 2px;
-      animation: drift-up 15s linear infinite;
-    }
-    .hero-fence-left, .hero-fence-right {
-      position: absolute; display: none;
-    }
-    @media (min-width: 1024px) {
-      .hero-fence-left  { display: block; left: 5%;  top: 33%; }
-      .hero-fence-right { display: block; right: 8%; top: 25%; }
-    }
-    .fence-panel {
-      width: 96px; height: 192px;
-      border: 2px solid rgba(245,239,230,0.1); border-radius: 4px;
-      animation: float 6s ease-in-out infinite;
-      position: relative;
-    }
-    .fence-panel-right {
-      width: 80px; height: 160px;
-      border: 2px solid rgba(200,130,58,0.15); border-radius: 4px;
-      animation: float-slow 8s ease-in-out infinite;
-      animation-delay: 2s;
-    }
-    .fence-rail { width: 100%; height: 1px; background: rgba(245,239,230,0.1); margin-top: 20px; }
-    .fence-rail-r { width: 100%; height: 1px; background: rgba(200,130,58,0.15); margin-top: 18px; }
     .hero-content {
       position: relative; z-index: 10;
       text-align: center; padding: 0 1rem;
@@ -962,26 +930,6 @@
   </div>
   <div class="hero-overlay"></div>
 
-  <!-- Floating planks -->
-  <div class="floating-plank" style="left:10%;animation-delay:0s;animation-duration:14s"></div>
-  <div class="floating-plank" style="left:25%;animation-delay:3s;animation-duration:18s"></div>
-  <div class="floating-plank" style="left:50%;animation-delay:6s;animation-duration:16s"></div>
-  <div class="floating-plank" style="left:75%;animation-delay:9s;animation-duration:20s"></div>
-  <div class="floating-plank" style="left:90%;animation-delay:2s;animation-duration:15s"></div>
-
-  <!-- 3D fence panels -->
-  <div class="hero-fence-left" style="perspective:800px">
-    <div class="fence-panel" style="transform:rotateY(15deg) rotateX(5deg)">
-      <div class="fence-rail"></div><div class="fence-rail"></div>
-      <div class="fence-rail"></div><div class="fence-rail"></div>
-    </div>
-  </div>
-  <div class="hero-fence-right" style="perspective:800px">
-    <div class="fence-panel-right" style="transform:rotateY(-12deg) rotateX(8deg);animation-delay:2s">
-      <div class="fence-rail-r"></div><div class="fence-rail-r"></div>
-      <div class="fence-rail-r"></div><div class="fence-rail-r"></div>
-    </div>
-  </div>
 
   <div class="hero-content">
     <img src="assets/logo.png" alt="Master Fences & Decks" class="hero-logo" />
@@ -1149,70 +1097,373 @@
     </div>
     <div class="gallery-filters">
       <button class="filter-btn active" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="fences">Fences</button>
+      <button class="filter-btn" data-filter="cedar">Cedar Fences</button>
+      <button class="filter-btn" data-filter="aluminum">Aluminum</button>
+      <button class="filter-btn" data-filter="iron">Iron / Steel</button>
+      <button class="filter-btn" data-filter="chainlink">Chain Link</button>
       <button class="filter-btn" data-filter="decks">Decks</button>
+      <button class="filter-btn" data-filter="pergolas">Pergolas</button>
       <button class="filter-btn" data-filter="gates">Gates</button>
     </div>
     <div class="gallery-grid" id="gallery-grid">
 
-      <div class="gallery-item reveal" data-cat="fences">
-        <img src="assets/project-fence.jpg" alt="Cedar Privacy Fence" loading="lazy" />
-        <div class="gallery-overlay">
-          <div>
-            <p class="gallery-caption-title">Cedar Privacy Fence</p>
-            <p class="gallery-caption-loc">Oakville, ON</p>
-          </div>
-        </div>
+      <!-- ════ CEDAR FENCES ════ -->
+      <div class="gallery-item reveal" data-cat="cedar">
+        <img src="assets/fence-cedar-caprail.jpg" alt="Cedar Cap-Rail Privacy Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Cedar Cap-Rail Privacy Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
       </div>
 
+      <div class="gallery-item reveal delay-1" data-cat="cedar">
+        <img src="assets/fence-cedar-yard.jpg" alt="Cedar Backyard Enclosure" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Cedar Backyard Enclosure</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-2" data-cat="cedar">
+        <img src="assets/project-fence.jpg" alt="Cedar Privacy Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Cedar Privacy Fence</p>
+          <p class="gallery-caption-loc">Oakville, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-1" data-cat="cedar">
+        <img src="assets/fence-cedar-board-01.jpg" alt="Cedar Board Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Cedar Board Privacy Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-2" data-cat="cedar">
+        <img src="assets/fence-cedar-board-02.jpg" alt="Cedar Board Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Cedar Board Privacy Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-3" data-cat="cedar">
+        <img src="assets/fence-cedar-board-03.jpg" alt="Cedar Privacy Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Cedar Privacy Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal" data-cat="cedar">
+        <img src="assets/fence-cedar-board-04.jpg" alt="Cedar Privacy Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Cedar Privacy Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-1" data-cat="cedar">
+        <img src="assets/fence-cedar-board-05.jpg" alt="Cedar Privacy Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Cedar Privacy Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-2" data-cat="cedar">
+        <img src="assets/fence-cedar-board-06.jpg" alt="Cedar Privacy Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Cedar Privacy Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-3" data-cat="cedar">
+        <img src="assets/fence-cedar-board-07.jpg" alt="Cedar Privacy Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Cedar Privacy Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-1" data-cat="cedar">
+        <img src="assets/fence-cedar-board-08.jpg" alt="Cedar Privacy Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Cedar Privacy Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-2" data-cat="cedar">
+        <img src="assets/fence-cedar-board-09.jpg" alt="Cedar Privacy Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Cedar Privacy Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-3" data-cat="cedar">
+        <img src="assets/fence-cedar-board-10.jpg" alt="Cedar Privacy Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Cedar Privacy Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal" data-cat="cedar">
+        <img src="assets/fence-cedar-board-11.jpg" alt="Cedar Privacy Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Cedar Privacy Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <!-- ════ ALUMINUM FENCES ════ -->
+      <div class="gallery-item reveal delay-1" data-cat="aluminum">
+        <img src="assets/fence-aluminum-01.jpg" alt="Aluminum Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Aluminum Ornamental Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Aluminum</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-2" data-cat="aluminum">
+        <img src="assets/fence-aluminum-02.jpg" alt="Aluminum Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Aluminum Privacy Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Aluminum</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-3" data-cat="aluminum">
+        <img src="assets/fence-aluminum-03.jpg" alt="Aluminum Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Aluminum Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Aluminum</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal" data-cat="aluminum">
+        <img src="assets/fence-aluminum-04.jpg" alt="Aluminum Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Aluminum Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Aluminum</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-1" data-cat="aluminum">
+        <img src="assets/fence-aluminum-05.jpg" alt="Aluminum Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Aluminum Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Aluminum</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-2" data-cat="aluminum">
+        <img src="assets/fence-aluminum-06.jpg" alt="Aluminum Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Aluminum Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Aluminum</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-3" data-cat="aluminum">
+        <img src="assets/fence-aluminum-07.jpg" alt="Aluminum Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Aluminum Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Aluminum</p>
+        </div></div>
+      </div>
+
+      <!-- ════ IRON / STEEL FENCES ════ -->
+      <div class="gallery-item reveal delay-1" data-cat="iron">
+        <img src="assets/fence-iron-01.jpg" alt="Iron Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Wrought Iron Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Iron / Steel</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-2" data-cat="iron">
+        <img src="assets/fence-iron-02.jpg" alt="Iron Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Iron Ornamental Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Iron / Steel</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-3" data-cat="iron">
+        <img src="assets/fence-iron-03.jpg" alt="Iron Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Steel Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Iron / Steel</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal" data-cat="iron">
+        <img src="assets/fence-iron-04.jpg" alt="Iron Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Iron Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Iron / Steel</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-1" data-cat="iron">
+        <img src="assets/fence-iron-05.jpg" alt="Iron Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Iron Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Iron / Steel</p>
+        </div></div>
+      </div>
+
+      <!-- ════ CHAIN LINK FENCES ════ -->
+      <div class="gallery-item reveal delay-2" data-cat="chainlink">
+        <img src="assets/fence-chainlink-01.jpg" alt="Chain Link Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Galvanized Chain Link Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Chain Link</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-3" data-cat="chainlink">
+        <img src="assets/fence-chainlink-02.jpg" alt="Chain Link Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Chain Link Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Chain Link</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal" data-cat="chainlink">
+        <img src="assets/fence-chainlink-03.jpg" alt="Chain Link Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Chain Link Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Chain Link</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-1" data-cat="chainlink">
+        <img src="assets/fence-chainlink-04.jpg" alt="Chain Link Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Chain Link Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Chain Link</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-2" data-cat="chainlink">
+        <img src="assets/fence-chainlink-05.jpg" alt="Chain Link Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Chain Link Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Chain Link</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-3" data-cat="chainlink">
+        <img src="assets/fence-chainlink-06.jpg" alt="Chain Link Fence" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Chain Link Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Chain Link</p>
+        </div></div>
+      </div>
+
+      <!-- ════ DECKS ════ -->
       <div class="gallery-item reveal delay-1" data-cat="decks">
         <img src="assets/project-deck-porch.jpg" alt="Two-Story Cedar Porch" loading="lazy" />
-        <div class="gallery-overlay">
-          <div>
-            <p class="gallery-caption-title">Two-Story Cedar Porch</p>
-            <p class="gallery-caption-loc">Aurora, ON</p>
-          </div>
-        </div>
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Two-Story Cedar Porch</p>
+          <p class="gallery-caption-loc">Aurora, ON · Cedar</p>
+        </div></div>
       </div>
 
       <div class="gallery-item reveal delay-2" data-cat="decks">
-        <img src="assets/project-pergola.jpg" alt="Cedar Pergola & Deck" loading="lazy" />
-        <div class="gallery-overlay">
-          <div>
-            <p class="gallery-caption-title">Cedar Pergola &amp; Deck</p>
-            <p class="gallery-caption-loc">King City, ON</p>
-          </div>
-        </div>
+        <img src="assets/project-deck-glass.jpg" alt="Glass Railing Deck" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Elevated Deck with Glass Railing</p>
+          <p class="gallery-caption-loc">Richmond Hill, ON · Composite</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-3" data-cat="decks">
+        <img src="assets/deck-01.jpg" alt="Cedar Deck" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Two-Story Cedar Deck &amp; Porch</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
       </div>
 
       <div class="gallery-item reveal delay-1" data-cat="decks">
-        <img src="assets/project-deck-glass.jpg" alt="Glass Railing Deck" loading="lazy" />
-        <div class="gallery-overlay">
-          <div>
-            <p class="gallery-caption-title">Glass Railing Deck</p>
-            <p class="gallery-caption-loc">Richmond Hill, ON</p>
-          </div>
-        </div>
+        <img src="assets/deck-02.jpg" alt="Cedar Deck with Pergola" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Cedar Deck with Pergola</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-2" data-cat="decks">
+        <img src="assets/deck-03.jpg" alt="Multi-Level Cedar Deck" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Multi-Level Cedar Deck</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-3" data-cat="decks">
+        <img src="assets/deck-04.jpg" alt="Elevated Composite Deck" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Elevated Composite Deck</p>
+          <p class="gallery-caption-loc">GTA, ON · Composite</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal" data-cat="decks">
+        <img src="assets/deck-05.jpg" alt="Cedar Deck with Glass Railing" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Cedar Deck with Glass Railing</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <!-- ════ PERGOLAS ════ -->
+      <div class="gallery-item reveal delay-1" data-cat="pergolas">
+        <img src="assets/project-pergola.jpg" alt="Cedar Pergola &amp; Deck" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Cedar Pergola &amp; Deck</p>
+          <p class="gallery-caption-loc">King City, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-2" data-cat="pergolas">
+        <img src="assets/pergola-cedar-deck.jpg" alt="Cedar Pergola with Lattice" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Cedar Pergola with Lattice &amp; Deck</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <!-- ════ GATES ════ -->
+      <div class="gallery-item reveal delay-3" data-cat="gates">
+        <img src="assets/gate-cedar-01.jpg" alt="Cedar Privacy Gate" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Cedar Privacy Gate</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-1" data-cat="gates">
+        <img src="assets/gate-cedar-0973.jpg" alt="Cedar Gate" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Cedar Backyard Gate</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
       </div>
 
       <div class="gallery-item reveal delay-2" data-cat="gates">
-        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&q=80" alt="Modern Aluminum Gate" loading="lazy" />
-        <div class="gallery-overlay">
-          <div>
-            <p class="gallery-caption-title">Modern Aluminum Gate</p>
-            <p class="gallery-caption-loc">Richmond Hill, ON</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="gallery-item reveal delay-3" data-cat="fences">
-        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80" alt="Contemporary Wood Fence" loading="lazy" />
-        <div class="gallery-overlay">
-          <div>
-            <p class="gallery-caption-title">Contemporary Wood Fence</p>
-            <p class="gallery-caption-loc">Aurora, ON</p>
-          </div>
-        </div>
+        <img src="assets/gate-cedar-1755.jpg" alt="Cedar Gate" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Cedar Privacy Gate</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
       </div>
 
     </div>
