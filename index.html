@@ -126,7 +126,7 @@
     #custom-cursor {
       position: fixed;
       pointer-events: none;
-      z-index: 9999;
+      z-index: 10010;
       background: none;
       width: 10px; height: 34px;        /* nail default size */
       filter: drop-shadow(0 2px 6px rgba(0,0,0,0.45));
@@ -364,17 +364,41 @@
     @media (min-width: 1024px) { .services-grid { grid-template-columns: repeat(3, 1fr); } }
     .service-card {
       background: rgba(30,42,56,0.5);
-      border: 1px solid var(--border); border-radius: 8px;
-      padding: 2rem; position: relative;
-      transition: border-color 0.3s, box-shadow 0.3s, transform 0.1s;
+      border: 1px solid var(--border); border-radius: 12px;
+      overflow: hidden; position: relative; padding: 0;
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.35s;
+      cursor: pointer;
     }
     .service-card:hover {
-      border-color: rgba(200,130,58,0.5);
-      box-shadow: 0 8px 30px rgba(200,130,58,0.1);
+      border-color: rgba(200,130,58,0.6);
+      box-shadow: 0 20px 50px rgba(200,130,58,0.18);
+      transform: translateY(-6px);
     }
-    .service-icon { width: 40px; height: 40px; color: var(--amber); margin-bottom: 1.25rem; }
-    .service-title { font-size: 1.25rem; color: var(--warm-white); margin-bottom: 0.75rem; }
-    .service-desc  { font-size: 0.9rem; color: var(--muted-fg); line-height: 1.7; }
+    .service-img-wrap {
+      background: #ffffff;
+      height: 240px;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0.4rem; overflow: hidden; position: relative;
+    }
+    .service-img-wrap img {
+      width: 100%; height: 100%;
+      object-fit: contain; display: block;
+      mix-blend-mode: multiply;
+      transition: transform 0.45s cubic-bezier(0.34, 1.3, 0.64, 1);
+    }
+    .service-card:hover .service-img-wrap img { transform: scale(1.1); }
+    .service-img-wrap.svc-cover { background: transparent; padding: 0; }
+    .service-img-wrap.svc-cover img { object-fit: cover; mix-blend-mode: normal; }
+    .service-img-wrap::after {
+      content: '';
+      position: absolute; bottom: 0; left: 8%; right: 8%; height: 2px;
+      background: linear-gradient(to right, transparent, var(--amber) 30%, var(--amber) 70%, transparent);
+    }
+    .service-card-body { padding: 1.5rem; }
+    .service-title { font-size: 1.2rem; color: var(--warm-white); margin-bottom: 0.6rem; }
+    .service-desc  { font-size: 0.88rem; color: var(--muted-fg); line-height: 1.7; }
+    .svc-gallery-link { display: inline-block; margin-top: 0.85rem; font-size: 0.8rem; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); opacity: 0.75; transition: opacity 0.2s; }
+    .service-card:hover .svc-gallery-link { opacity: 1; }
 
     /* ============================================
        WHY CHOOSE US
@@ -708,6 +732,8 @@
     [data-theme="light"] .section-title { color: #1a1209; }
     [data-theme="light"] .service-card { background: rgba(255,255,255,0.9); border-color: #d4c8bb; }
     [data-theme="light"] .service-card:hover { border-color: var(--amber); box-shadow: 0 8px 30px rgba(139,74,31,0.12); }
+    [data-theme="light"] .service-img-wrap { background: #ffffff; }
+    [data-theme="light"] .service-card-body { background: rgba(255,255,255,0.9); }
     [data-theme="light"] .service-title { color: #1a1209; }
     [data-theme="light"] .service-desc  { color: #6b5c48; }
     [data-theme="light"] #why-us { background: #ede0d0; }
@@ -829,6 +855,157 @@
     }
     @keyframes ripple-burst {
       to { transform: scale(5); opacity: 0; }
+    }
+
+    /* ============================================
+       LIGHTBOX
+    ============================================ */
+    /* Make gallery items look clickable */
+    .gallery-item, #featured-grid .feat-item {
+      cursor: none;
+    }
+    .gallery-item::after, #featured-grid .feat-item::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(200,130,58,0);
+      transition: background 0.2s ease;
+      pointer-events: none; z-index: 2; border-radius: inherit;
+    }
+    .gallery-item:hover::after, #featured-grid .feat-item:hover::after {
+      background: rgba(200,130,58,0.08);
+    }
+
+    /* Zoom-in icon hint on hover */
+    .gallery-item .lb-zoom-hint,
+    #featured-grid .feat-item .lb-zoom-hint {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0.6);
+      opacity: 0; z-index: 5;
+      width: 48px; height: 48px;
+      background: rgba(200,130,58,0.9);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity 0.22s ease, transform 0.22s ease;
+      pointer-events: none;
+    }
+    .gallery-item .lb-zoom-hint svg,
+    #featured-grid .feat-item .lb-zoom-hint svg {
+      width: 22px; height: 22px; color: #0a0a0a;
+    }
+    .gallery-item:hover .lb-zoom-hint,
+    #featured-grid .feat-item:hover .lb-zoom-hint {
+      opacity: 1; transform: translate(-50%, -50%) scale(1);
+    }
+
+    /* Overlay */
+    #lightbox {
+      position: fixed; inset: 0; z-index: 10000;
+      background: rgba(0,0,0,0);
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none;
+      transition: background 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #lightbox.lb-open {
+      background: rgba(0,0,0,0.96);
+      pointer-events: all;
+    }
+
+    /* Image wrapper */
+    #lb-img-wrap {
+      position: relative;
+      display: flex; flex-direction: column; align-items: center;
+      transform: scale(0.78) translateY(30px);
+      opacity: 0;
+      transition:
+        transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1),
+        opacity   0.32s ease;
+      max-width: 92vw;
+    }
+    #lightbox.lb-open #lb-img-wrap {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+    #lightbox.lb-closing #lb-img-wrap {
+      transform: scale(0.78) translateY(30px);
+      opacity: 0;
+    }
+    #lightbox.lb-closing {
+      background: rgba(0,0,0,0);
+    }
+
+    #lb-img {
+      display: block;
+      max-width: 92vw; max-height: 82vh;
+      width: auto; height: auto;
+      object-fit: contain;
+      border-radius: 6px;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.7), 0 0 0 1px rgba(200,130,58,0.15);
+    }
+
+    /* Caption */
+    #lb-caption {
+      margin-top: 1rem; text-align: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1rem; letter-spacing: 0.06em;
+      color: rgba(245,239,230,0.75);
+      min-height: 1.4em;
+    }
+
+    /* Close button */
+    #lb-close {
+      position: absolute; top: -18px; right: -18px;
+      width: 42px; height: 42px; border-radius: 50%;
+      background: var(--amber); color: var(--dark);
+      border: none; display: flex; align-items: center; justify-content: center;
+      transition: transform 0.25s ease, background 0.2s;
+      z-index: 2;
+    }
+    #lb-close svg { width: 18px; height: 18px; }
+    #lb-close:hover { transform: scale(1.12) rotate(90deg); }
+
+    /* Prev / Next arrows */
+    #lb-prev, #lb-next {
+      position: fixed; top: 50%; z-index: 10001;
+      width: 52px; height: 52px; border-radius: 50%;
+      background: rgba(200,130,58,0.15);
+      border: 2px solid rgba(200,130,58,0.5);
+      color: var(--amber);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+      transform: translateY(-50%);
+    }
+    #lb-prev { left: 1.25rem; }
+    #lb-next { right: 1.25rem; }
+    #lb-prev svg, #lb-next svg { width: 24px; height: 24px; }
+    #lb-prev:hover, #lb-next:hover {
+      background: var(--amber); border-color: var(--amber); color: var(--dark);
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    /* Counter */
+    #lb-counter {
+      position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+      font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem;
+      letter-spacing: 0.15em; color: rgba(245,239,230,0.4);
+      pointer-events: none;
+    }
+
+    /* Navigate transition */
+    #lb-img-wrap.lb-nav-out {
+      transition: transform 0.18s ease, opacity 0.18s ease !important;
+      transform: scale(0.88) !important;
+      opacity: 0 !important;
+    }
+    #lb-img-wrap.lb-nav-in {
+      transition: transform 0.28s cubic-bezier(0.34,1.36,0.64,1), opacity 0.22s ease !important;
+      transform: scale(1) !important;
+      opacity: 1 !important;
+    }
+
+    @media (max-width: 640px) {
+      #lb-prev { left: 0.5rem; width: 40px; height: 40px; }
+      #lb-next { right: 0.5rem; width: 40px; height: 40px; }
+      #lb-img { max-height: 75vh; }
     }
   </style>
 </head>
@@ -1000,64 +1177,70 @@
     </div>
     <div class="services-grid">
 
-      <div class="service-card reveal delay-1">
-        <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <rect x="2" y="3" width="2" height="18" rx="1"/>
-          <rect x="11" y="3" width="2" height="18" rx="1"/>
-          <rect x="20" y="3" width="2" height="18" rx="1"/>
-          <line x1="2" y1="8"  x2="22" y2="8"/>
-          <line x1="2" y1="16" x2="22" y2="16"/>
-        </svg>
-        <h3 class="service-title">Wood Fencing</h3>
-        <p class="service-desc">Premium cedar and pressure-treated wood fences built with precision and care.</p>
+      <div class="service-card reveal delay-1" data-gallery-filter="cedar">
+        <div class="service-img-wrap">
+          <img src="assets/wooden fencing.png" alt="Wood Fencing" loading="lazy" />
+        </div>
+        <div class="service-card-body">
+          <h3 class="service-title">Wood Fencing</h3>
+          <p class="service-desc">Premium cedar and pressure-treated wood fences built with precision and care.</p>
+          <span class="svc-gallery-link">View our work →</span>
+        </div>
       </div>
 
-      <div class="service-card reveal delay-2">
-        <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-        </svg>
-        <h3 class="service-title">Vinyl Fencing</h3>
-        <p class="service-desc">Low-maintenance, durable vinyl fencing that looks stunning for decades.</p>
+      <div class="service-card reveal delay-2" data-gallery-filter="vinyl">
+        <div class="service-img-wrap">
+          <img src="assets/vinyl fencing.png" alt="Vinyl Fencing" loading="lazy" style="transform: scale(1.30);" />
+        </div>
+        <div class="service-card-body">
+          <h3 class="service-title">Vinyl Fencing</h3>
+          <p class="service-desc">Low-maintenance, durable vinyl fencing that looks stunning for decades.</p>
+          <span class="svc-gallery-link">View our work →</span>
+        </div>
       </div>
 
-      <div class="service-card reveal delay-3">
-        <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-          <polyline points="9 22 9 12 15 12 15 22"/>
-        </svg>
-        <h3 class="service-title">Aluminum Fencing</h3>
-        <p class="service-desc">Sleek, modern aluminum fences perfect for pools, gardens, and property lines.</p>
+      <div class="service-card reveal delay-3" data-gallery-filter="aluminum">
+        <div class="service-img-wrap">
+          <img src="assets/aluminum fencing.png" alt="Aluminum Fencing" loading="lazy" />
+        </div>
+        <div class="service-card-body">
+          <h3 class="service-title">Aluminum Fencing</h3>
+          <p class="service-desc">Sleek, modern aluminum fences perfect for pools, gardens, and property lines.</p>
+          <span class="svc-gallery-link">View our work →</span>
+        </div>
       </div>
 
-      <div class="service-card reveal delay-1">
-        <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <rect x="2" y="18" width="20" height="3" rx="1"/>
-          <rect x="5" y="7" width="14" height="11"/>
-          <line x1="9" y1="7" x2="9" y2="18"/>
-          <line x1="15" y1="7" x2="15" y2="18"/>
-          <path d="M5 7h14l-2-4H7z"/>
-        </svg>
-        <h3 class="service-title">Composite Decking</h3>
-        <p class="service-desc">Weather-resistant composite decks that combine beauty with lasting performance.</p>
+      <div class="service-card reveal delay-1" data-gallery-filter="decks">
+        <div class="service-img-wrap">
+          <img src="assets/composite decking.png" alt="Composite Decking" loading="lazy" />
+        </div>
+        <div class="service-card-body">
+          <h3 class="service-title">Composite Decking</h3>
+          <p class="service-desc">Weather-resistant composite decks that combine beauty with lasting performance.</p>
+          <span class="svc-gallery-link">View our work →</span>
+        </div>
       </div>
 
-      <div class="service-card reveal delay-2">
-        <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M12 2a7 7 0 00-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 00-7-7z"/>
-          <circle cx="12" cy="9" r="2.5"/>
-        </svg>
-        <h3 class="service-title">Wood Decking</h3>
-        <p class="service-desc">Handcrafted cedar and hardwood decks that bring warmth to your outdoor space.</p>
+      <div class="service-card reveal delay-2" data-gallery-filter="decks">
+        <div class="service-img-wrap">
+          <img src="assets/wooden decking.png" alt="Wood Decking" loading="lazy" />
+        </div>
+        <div class="service-card-body">
+          <h3 class="service-title">Wood Decking</h3>
+          <p class="service-desc">Handcrafted cedar and hardwood decks that bring warmth to your outdoor space.</p>
+          <span class="svc-gallery-link">View our work →</span>
+        </div>
       </div>
 
-      <div class="service-card reveal delay-3">
-        <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M3 21h18M3 21V8l9-5 9 5v13"/>
-          <rect x="9" y="13" width="6" height="8"/>
-          <path d="M9 13V9m6 4V9"/>
-        </svg>
-        <h3 class="service-title">Pergolas &amp; Gates</h3>
-        <p class="service-desc">Custom pergolas and gates that add character and curb appeal to any property.</p>
+      <div class="service-card reveal delay-3" data-gallery-filter="gates">
+        <div class="service-img-wrap">
+          <img src="assets/pergolas & gates.png" alt="Pergolas &amp; Gates" loading="lazy" />
+        </div>
+        <div class="service-card-body">
+          <h3 class="service-title">Pergolas &amp; Gates</h3>
+          <p class="service-desc">Custom pergolas and gates that add character and curb appeal to any property.</p>
+          <span class="svc-gallery-link">View our work →</span>
+        </div>
       </div>
 
     </div>
@@ -1141,7 +1324,7 @@
       <button class="filter-btn active" data-filter="all">All</button>
       <button class="filter-btn" data-filter="cedar">Cedar Fences</button>
       <button class="filter-btn" data-filter="aluminum">Aluminum</button>
-      <button class="filter-btn" data-filter="iron">Iron / Steel</button>
+      <button class="filter-btn" data-filter="vinyl">Vinyl Fences</button>
       <button class="filter-btn" data-filter="chainlink">Chain Link</button>
       <button class="filter-btn" data-filter="decks">Decks</button>
       <button class="filter-btn" data-filter="gates">Gates</button>
@@ -1219,6 +1402,14 @@
 
       <!-- ════ CEDAR FENCES ════ -->
       <div class="gallery-item reveal" data-cat="cedar">
+        <img src="assets/fence-cedar-board-13.jpg" alt="Cedar Privacy Fence Panel" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Cedar Privacy Fence Panel</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-1" data-cat="cedar">
         <img src="assets/fence-cedar-caprail.jpg" alt="Cedar Cap-Rail Privacy Fence" loading="lazy" />
         <div class="gallery-overlay"><div>
           <p class="gallery-caption-title">Cedar Cap-Rail Privacy Fence</p>
@@ -1226,7 +1417,7 @@
         </div></div>
       </div>
 
-      <div class="gallery-item reveal delay-1" data-cat="cedar">
+      <div class="gallery-item reveal delay-2" data-cat="cedar">
         <img src="assets/fence-cedar-yard.jpg" alt="Cedar Backyard Enclosure" loading="lazy" />
         <div class="gallery-overlay"><div>
           <p class="gallery-caption-title">Cedar Backyard Enclosure</p>
@@ -1234,15 +1425,7 @@
         </div></div>
       </div>
 
-      <div class="gallery-item reveal delay-2" data-cat="cedar">
-        <img src="assets/project-fence.jpg" alt="Cedar Privacy Fence" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Cedar Privacy Fence</p>
-          <p class="gallery-caption-loc">Oakville, ON · Cedar</p>
-        </div></div>
-      </div>
-
-      <div class="gallery-item reveal delay-1" data-cat="cedar">
+      <div class="gallery-item reveal delay-3" data-cat="cedar">
         <img src="assets/fence-cedar-board-01.jpg" alt="Cedar Board Fence" loading="lazy" />
         <div class="gallery-overlay"><div>
           <p class="gallery-caption-title">Cedar Board Privacy Fence</p>
@@ -1250,15 +1433,7 @@
         </div></div>
       </div>
 
-      <div class="gallery-item reveal delay-2" data-cat="cedar">
-        <img src="assets/fence-cedar-board-02.jpg" alt="Cedar Board Fence" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Cedar Board Privacy Fence</p>
-          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
-        </div></div>
-      </div>
-
-      <div class="gallery-item reveal delay-3" data-cat="cedar">
+      <div class="gallery-item reveal" data-cat="cedar">
         <img src="assets/fence-cedar-board-03.jpg" alt="Cedar Privacy Fence" loading="lazy" />
         <div class="gallery-overlay"><div>
           <p class="gallery-caption-title">Cedar Privacy Fence</p>
@@ -1266,7 +1441,7 @@
         </div></div>
       </div>
 
-      <div class="gallery-item reveal" data-cat="cedar">
+      <div class="gallery-item reveal delay-1" data-cat="cedar">
         <img src="assets/fence-cedar-board-04.jpg" alt="Cedar Privacy Fence" loading="lazy" />
         <div class="gallery-overlay"><div>
           <p class="gallery-caption-title">Cedar Privacy Fence</p>
@@ -1274,16 +1449,8 @@
         </div></div>
       </div>
 
-      <div class="gallery-item reveal delay-1" data-cat="cedar">
-        <img src="assets/fence-cedar-board-05.jpg" alt="Cedar Privacy Fence" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Cedar Privacy Fence</p>
-          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
-        </div></div>
-      </div>
-
       <div class="gallery-item reveal delay-2" data-cat="cedar">
-        <img src="assets/fence-cedar-board-06.jpg" alt="Cedar Privacy Fence" loading="lazy" />
+        <img src="assets/fence-cedar-board-05.jpg" alt="Cedar Privacy Fence" loading="lazy" />
         <div class="gallery-overlay"><div>
           <p class="gallery-caption-title">Cedar Privacy Fence</p>
           <p class="gallery-caption-loc">GTA, ON · Cedar</p>
@@ -1298,7 +1465,7 @@
         </div></div>
       </div>
 
-      <div class="gallery-item reveal delay-1" data-cat="cedar">
+      <div class="gallery-item reveal" data-cat="cedar">
         <img src="assets/fence-cedar-board-08.jpg" alt="Cedar Privacy Fence" loading="lazy" />
         <div class="gallery-overlay"><div>
           <p class="gallery-caption-title">Cedar Privacy Fence</p>
@@ -1306,7 +1473,7 @@
         </div></div>
       </div>
 
-      <div class="gallery-item reveal delay-2" data-cat="cedar">
+      <div class="gallery-item reveal delay-1" data-cat="cedar">
         <img src="assets/fence-cedar-board-09.jpg" alt="Cedar Privacy Fence" loading="lazy" />
         <div class="gallery-overlay"><div>
           <p class="gallery-caption-title">Cedar Privacy Fence</p>
@@ -1314,7 +1481,7 @@
         </div></div>
       </div>
 
-      <div class="gallery-item reveal delay-3" data-cat="cedar">
+      <div class="gallery-item reveal delay-2" data-cat="cedar">
         <img src="assets/fence-cedar-board-10.jpg" alt="Cedar Privacy Fence" loading="lazy" />
         <div class="gallery-overlay"><div>
           <p class="gallery-caption-title">Cedar Privacy Fence</p>
@@ -1322,7 +1489,7 @@
         </div></div>
       </div>
 
-      <div class="gallery-item reveal" data-cat="cedar">
+      <div class="gallery-item reveal delay-3" data-cat="cedar">
         <img src="assets/fence-cedar-board-11.jpg" alt="Cedar Privacy Fence" loading="lazy" />
         <div class="gallery-overlay"><div>
           <p class="gallery-caption-title">Cedar Privacy Fence</p>
@@ -1339,38 +1506,22 @@
       </div>
 
       <div class="gallery-item reveal delay-1" data-cat="cedar">
-        <img src="assets/fence-cedar-board-13.jpg" alt="Cedar Privacy Fence Panel" loading="lazy" />
+        <img src="assets/fence-cedar-18.jpg" alt="Cedar Horizontal Slat Poolside" loading="lazy" />
         <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Cedar Privacy Fence Panel</p>
+          <p class="gallery-caption-title">Cedar Horizontal Slat · Poolside</p>
           <p class="gallery-caption-loc">GTA, ON · Cedar</p>
         </div></div>
       </div>
 
       <div class="gallery-item reveal delay-2" data-cat="cedar">
-        <img src="assets/fence-cedar-12.jpg" alt="Cedar Privacy Fence" loading="lazy" />
+        <img src="assets/fence-cedar-19.jpg" alt="Cedar Fence Backyard Patio" loading="lazy" />
         <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Cedar Privacy Fence</p>
-          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
-        </div></div>
-      </div>
-
-      <div class="gallery-item reveal" data-cat="cedar">
-        <img src="assets/fence-cedar-13.jpg" alt="Cedar Privacy Fence" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Cedar Privacy Fence</p>
+          <p class="gallery-caption-title">Cedar Fence · Backyard Patio</p>
           <p class="gallery-caption-loc">GTA, ON · Cedar</p>
         </div></div>
       </div>
 
       <!-- ════ ALUMINUM FENCES ════ -->
-      <div class="gallery-item reveal delay-1" data-cat="aluminum">
-        <img src="assets/fence-aluminum-01.jpg" alt="Aluminum Fence" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Aluminum Ornamental Fence</p>
-          <p class="gallery-caption-loc">GTA, ON · Aluminum</p>
-        </div></div>
-      </div>
-
       <div class="gallery-item reveal delay-2" data-cat="aluminum">
         <img src="assets/fence-aluminum-02.jpg" alt="Aluminum Fence" loading="lazy" />
         <div class="gallery-overlay"><div>
@@ -1395,14 +1546,6 @@
         </div></div>
       </div>
 
-      <div class="gallery-item reveal delay-1" data-cat="aluminum">
-        <img src="assets/fence-aluminum-05.jpg" alt="Aluminum Fence" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Aluminum Fence</p>
-          <p class="gallery-caption-loc">GTA, ON · Aluminum</p>
-        </div></div>
-      </div>
-
       <div class="gallery-item reveal delay-2" data-cat="aluminum">
         <img src="assets/fence-aluminum-06.jpg" alt="Aluminum Fence" loading="lazy" />
         <div class="gallery-overlay"><div>
@@ -1419,72 +1562,41 @@
         </div></div>
       </div>
 
-      <!-- ════ IRON / STEEL FENCES ════ -->
-      <div class="gallery-item reveal delay-1" data-cat="iron">
-        <img src="assets/fence-iron-01.jpg" alt="Iron Fence" loading="lazy" />
+      <!-- ════ VINYL FENCES ════ -->
+      <div class="gallery-item reveal delay-1" data-cat="vinyl">
+        <img src="assets/fence-vinyl-01.jpg" alt="Vinyl Fence with Gate" loading="lazy" />
         <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Wrought Iron Fence</p>
-          <p class="gallery-caption-loc">GTA, ON · Iron / Steel</p>
+          <p class="gallery-caption-title">White Vinyl Privacy Fence &amp; Gate</p>
+          <p class="gallery-caption-loc">GTA, ON · Vinyl</p>
         </div></div>
       </div>
 
-      <div class="gallery-item reveal delay-2" data-cat="iron">
-        <img src="assets/fence-iron-02.jpg" alt="Iron Fence" loading="lazy" />
+      <div class="gallery-item reveal delay-2" data-cat="vinyl">
+        <img src="assets/fence-vinyl-02.jpg" alt="White Vinyl Privacy Fence" loading="lazy" />
         <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Iron Ornamental Fence</p>
-          <p class="gallery-caption-loc">GTA, ON · Iron / Steel</p>
+          <p class="gallery-caption-title">White Vinyl Privacy Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Vinyl</p>
         </div></div>
       </div>
 
-      <div class="gallery-item reveal delay-3" data-cat="iron">
-        <img src="assets/fence-iron-03.jpg" alt="Iron Fence" loading="lazy" />
+      <div class="gallery-item reveal delay-3" data-cat="vinyl">
+        <img src="assets/fence-vinyl-03.jpg" alt="Vinyl Fence Corner Post" loading="lazy" />
         <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Steel Fence</p>
-          <p class="gallery-caption-loc">GTA, ON · Iron / Steel</p>
+          <p class="gallery-caption-title">Vinyl Privacy Fence · Corner Detail</p>
+          <p class="gallery-caption-loc">GTA, ON · Vinyl</p>
         </div></div>
       </div>
 
-      <div class="gallery-item reveal" data-cat="iron">
-        <img src="assets/fence-iron-04.jpg" alt="Iron Fence" loading="lazy" />
+      <div class="gallery-item reveal" data-cat="vinyl">
+        <img src="assets/fence-vinyl-04.jpg" alt="Grey Vinyl Privacy Fence" loading="lazy" />
         <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Iron Fence</p>
-          <p class="gallery-caption-loc">GTA, ON · Iron / Steel</p>
+          <p class="gallery-caption-title">Grey Vinyl Privacy Fence</p>
+          <p class="gallery-caption-loc">GTA, ON · Vinyl</p>
         </div></div>
       </div>
 
-      <div class="gallery-item reveal delay-1" data-cat="iron">
-        <img src="assets/fence-iron-05.jpg" alt="Iron Fence" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Iron Fence</p>
-          <p class="gallery-caption-loc">GTA, ON · Iron / Steel</p>
-        </div></div>
-      </div>
 
       <!-- ════ CHAIN LINK FENCES ════ -->
-      <div class="gallery-item reveal delay-2" data-cat="chainlink">
-        <img src="assets/fence-chainlink-01.jpg" alt="Chain Link Fence" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Galvanized Chain Link Fence</p>
-          <p class="gallery-caption-loc">GTA, ON · Chain Link</p>
-        </div></div>
-      </div>
-
-      <div class="gallery-item reveal delay-3" data-cat="chainlink">
-        <img src="assets/fence-chainlink-02.jpg" alt="Chain Link Fence" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Chain Link Fence</p>
-          <p class="gallery-caption-loc">GTA, ON · Chain Link</p>
-        </div></div>
-      </div>
-
-      <div class="gallery-item reveal" data-cat="chainlink">
-        <img src="assets/fence-chainlink-03.jpg" alt="Chain Link Fence" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Chain Link Fence</p>
-          <p class="gallery-caption-loc">GTA, ON · Chain Link</p>
-        </div></div>
-      </div>
-
       <div class="gallery-item reveal delay-1" data-cat="chainlink">
         <img src="assets/fence-chainlink-04.jpg" alt="Chain Link Fence" loading="lazy" />
         <div class="gallery-overlay"><div>
@@ -1559,13 +1671,44 @@
       </div>
 
       <div class="gallery-item reveal" data-cat="decks">
-        <img src="assets/deck-05.jpg" alt="Cedar Deck with Glass Railing" loading="lazy" />
+        <img src="assets/deck-new-01.jpg" alt="Composite Deck with Staircase" loading="lazy" />
         <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Cedar Deck with Glass Railing</p>
+          <p class="gallery-caption-title">Composite Deck · White Railing</p>
+          <p class="gallery-caption-loc">GTA, ON · Composite</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-1" data-cat="decks">
+        <img src="assets/deck-new-02.jpg" alt="Cedar Deck with Glass Railing and Pergola" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Cedar Deck · Glass Railing &amp; Pergola</p>
           <p class="gallery-caption-loc">GTA, ON · Cedar</p>
         </div></div>
       </div>
 
+      <div class="gallery-item reveal delay-2" data-cat="decks">
+        <img src="assets/deck-new-03.jpg" alt="Wood Deck with Ramp" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Wood Deck · Accessible Ramp</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-3" data-cat="decks">
+        <img src="assets/deck-new-04.jpg" alt="Two-Story Cedar Deck with Covered Porch" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Two-Story Cedar Deck &amp; Porch</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal" data-cat="decks">
+        <img src="assets/deck-new-05.jpg" alt="Multi-Level Cedar Deck with Staircase" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Multi-Level Cedar Deck</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
+      </div>
 
       <!-- ════ GATES ════ -->
       <div class="gallery-item reveal delay-3" data-cat="gates">
@@ -1592,59 +1735,98 @@
         </div></div>
       </div>
 
-      <!-- ── Cedar fences (new batch) ── -->
-      <div class="gallery-item reveal" data-cat="cedar">
-        <img src="assets/fence-cedar-12.jpg" alt="Cedar Privacy Fence" loading="lazy" />
+      <div class="gallery-item reveal delay-3" data-cat="gates">
+        <img src="assets/gate-new-01.jpg" alt="Gate" loading="lazy" />
         <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Cedar Privacy Fence</p>
+          <p class="gallery-caption-title">Custom Gate</p>
           <p class="gallery-caption-loc">GTA, ON · Cedar</p>
         </div></div>
       </div>
 
-      <div class="gallery-item reveal delay-1" data-cat="cedar">
-        <img src="assets/fence-cedar-13.jpg" alt="Cedar Board-on-Board Fence" loading="lazy" />
+      <div class="gallery-item reveal" data-cat="gates">
+        <img src="assets/gate-new-02.jpg" alt="Gate" loading="lazy" />
         <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Cedar Board-on-Board Fence</p>
+          <p class="gallery-caption-title">Custom Gate</p>
           <p class="gallery-caption-loc">GTA, ON · Cedar</p>
         </div></div>
       </div>
 
-      <div class="gallery-item reveal delay-2" data-cat="cedar">
-        <img src="assets/fence-cedar-14.jpg" alt="Cedar Fence Poolside" loading="lazy" />
+      <div class="gallery-item reveal delay-1" data-cat="gates">
+        <img src="assets/gate-new-03.jpg" alt="Gate" loading="lazy" />
         <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Cedar Fence · Poolside</p>
+          <p class="gallery-caption-title">Custom Gate</p>
           <p class="gallery-caption-loc">GTA, ON · Cedar</p>
         </div></div>
       </div>
 
-      <div class="gallery-item reveal" data-cat="cedar">
-        <img src="assets/fence-cedar-15.jpg" alt="Cedar Horizontal Slat Fence" loading="lazy" />
+      <div class="gallery-item reveal delay-2" data-cat="gates">
+        <img src="assets/gate-new-04.jpg" alt="Gate" loading="lazy" />
         <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Cedar Horizontal Slat Fence</p>
+          <p class="gallery-caption-title">Custom Gate</p>
           <p class="gallery-caption-loc">GTA, ON · Cedar</p>
         </div></div>
       </div>
 
-      <div class="gallery-item reveal delay-1" data-cat="cedar">
-        <img src="assets/fence-cedar-16.jpg" alt="Cedar Privacy Fence at Sunset" loading="lazy" />
+      <div class="gallery-item reveal delay-3" data-cat="gates">
+        <img src="assets/gate-new-05.jpg" alt="Gate" loading="lazy" />
         <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Cedar Privacy Fence</p>
+          <p class="gallery-caption-title">Custom Gate</p>
           <p class="gallery-caption-loc">GTA, ON · Cedar</p>
         </div></div>
       </div>
 
-      <div class="gallery-item reveal delay-2" data-cat="cedar">
-        <img src="assets/fence-cedar-17.jpg" alt="Cedar Fence New Build" loading="lazy" />
+      <div class="gallery-item reveal" data-cat="gates">
+        <img src="assets/gate-new-06.jpg" alt="Gate" loading="lazy" />
         <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Cedar Fence · New Build</p>
+          <p class="gallery-caption-title">Custom Gate</p>
           <p class="gallery-caption-loc">GTA, ON · Cedar</p>
         </div></div>
       </div>
 
-      <div class="gallery-item reveal" data-cat="cedar">
-        <img src="assets/fence-cedar-18.jpg" alt="Cedar Horizontal Slat Poolside" loading="lazy" />
+      <div class="gallery-item reveal delay-1" data-cat="gates">
+        <img src="assets/gate-new-07.jpg" alt="Gate" loading="lazy" />
         <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Cedar Horizontal Slat · Poolside</p>
+          <p class="gallery-caption-title">Custom Gate</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-2" data-cat="gates">
+        <img src="assets/gate-new-08.jpg" alt="Gate" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Custom Gate</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-3" data-cat="gates">
+        <img src="assets/gate-new-09.jpg" alt="Gate" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Custom Gate</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal" data-cat="gates">
+        <img src="assets/gate-new-10.jpg" alt="Gate" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Custom Gate</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-1" data-cat="gates">
+        <img src="assets/pergola-new-01.jpg" alt="Pergola" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Custom Pergola</p>
+          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
+        </div></div>
+      </div>
+
+      <div class="gallery-item reveal delay-2" data-cat="gates">
+        <img src="assets/pergola-new-02.jpg" alt="Pergola" loading="lazy" />
+        <div class="gallery-overlay"><div>
+          <p class="gallery-caption-title">Custom Pergola</p>
           <p class="gallery-caption-loc">GTA, ON · Cedar</p>
         </div></div>
       </div>
@@ -1670,30 +1852,6 @@
         <img src="assets/fence-chainlink-09.jpg" alt="Commercial Chain Link Retaining Wall" loading="lazy" />
         <div class="gallery-overlay"><div>
           <p class="gallery-caption-title">Commercial Chain Link · Retaining Wall</p>
-          <p class="gallery-caption-loc">GTA, ON · Chain Link</p>
-        </div></div>
-      </div>
-
-      <div class="gallery-item reveal delay-1" data-cat="chainlink">
-        <img src="assets/fence-chainlink-10.jpg" alt="Chain Link Installation" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Chain Link Installation</p>
-          <p class="gallery-caption-loc">GTA, ON · Chain Link</p>
-        </div></div>
-      </div>
-
-      <div class="gallery-item reveal delay-2" data-cat="chainlink">
-        <img src="assets/fence-chainlink-11.jpg" alt="Chain Link Fence Retaining Wall" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Chain Link · Retaining Wall</p>
-          <p class="gallery-caption-loc">GTA, ON · Chain Link</p>
-        </div></div>
-      </div>
-
-      <div class="gallery-item reveal" data-cat="chainlink">
-        <img src="assets/fence-chainlink-12.jpg" alt="Commercial Chain Link Perimeter" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Commercial Chain Link Perimeter</p>
           <p class="gallery-caption-loc">GTA, ON · Chain Link</p>
         </div></div>
       </div>
@@ -1731,153 +1889,13 @@
         </div></div>
       </div>
 
-      <div class="gallery-item reveal delay-2" data-cat="aluminum">
-        <img src="assets/fence-aluminum-12.jpg" alt="Aluminum Fence Retaining Wall" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Aluminum Fence · Retaining Wall</p>
-          <p class="gallery-caption-loc">GTA, ON · Aluminum</p>
-        </div></div>
-      </div>
-
-      <!-- ── Iron (new batch) ── -->
-      <div class="gallery-item reveal" data-cat="iron">
-        <img src="assets/fence-iron-06.jpg" alt="Iron Fence Retaining Wall Winter" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Iron Fence · Retaining Wall</p>
-          <p class="gallery-caption-loc">GTA, ON · Iron / Steel</p>
-        </div></div>
-      </div>
-
-      <!-- ── Decks (new batch) ── -->
-      <div class="gallery-item reveal delay-1" data-cat="decks">
-        <img src="assets/deck-06.jpg" alt="Elevated Deck with Aluminum Railing" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Elevated Deck · Aluminum Railing</p>
-          <p class="gallery-caption-loc">GTA, ON · Deck</p>
-        </div></div>
-      </div>
-
-      <div class="gallery-item reveal delay-2" data-cat="decks">
-        <img src="assets/deck-07.jpg" alt="Deck and Pergola Columns" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Deck &amp; Pergola Columns</p>
-          <p class="gallery-caption-loc">GTA, ON · Deck &amp; Pergola</p>
-        </div></div>
-      </div>
-
-      <div class="gallery-item reveal" data-cat="decks">
-        <img src="assets/deck-08.jpg" alt="Cedar Deck with Privacy Screen" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Cedar Deck · Privacy Screen</p>
-          <p class="gallery-caption-loc">GTA, ON · Deck &amp; Cedar</p>
-        </div></div>
-      </div>
-
-      <div class="gallery-item reveal delay-1" data-cat="decks">
-        <img src="assets/deck-09.jpg" alt="Elevated Deck with Glass Railing" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Elevated Deck · Glass Railing</p>
-          <p class="gallery-caption-loc">GTA, ON · Deck</p>
-        </div></div>
-      </div>
-
-      <!-- ── Cedar (extra batch) ── -->
-      <div class="gallery-item reveal" data-cat="cedar">
-        <img src="assets/fence-cedar-19.jpg" alt="Cedar Fence Backyard Patio" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Cedar Fence · Backyard Patio</p>
-          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
-        </div></div>
-      </div>
-
-      <div class="gallery-item reveal delay-1" data-cat="cedar">
-        <img src="assets/fence-cedar-20.jpg" alt="Cedar Privacy Fence Side Yard" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Cedar Privacy Fence · Side Yard</p>
-          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
-        </div></div>
-      </div>
-
-      <div class="gallery-item reveal delay-2" data-cat="cedar">
-        <img src="assets/fence-cedar-21.jpg" alt="Cedar Fence Side Alley" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Cedar Privacy Fence · Alley</p>
-          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
-        </div></div>
-      </div>
-
-      <div class="gallery-item reveal" data-cat="cedar">
-        <img src="assets/fence-cedar-22.jpg" alt="Cedar Fence Along Pavers" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Cedar Fence · Paver Walkway</p>
-          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
-        </div></div>
-      </div>
-
-      <div class="gallery-item reveal delay-1" data-cat="cedar">
-        <img src="assets/fence-cedar-23.jpg" alt="Cedar Cap-Rail Fence Large Yard" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Cedar Cap-Rail · Large Yard</p>
-          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
-        </div></div>
-      </div>
-
-      <div class="gallery-item reveal delay-2" data-cat="cedar">
-        <img src="assets/fence-cedar-24.jpg" alt="Cedar Privacy Fence Post Caps" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Cedar Privacy Fence · Post Caps</p>
-          <p class="gallery-caption-loc">GTA, ON · Cedar</p>
-        </div></div>
-      </div>
-
-      <!-- ── Iron extra ── -->
-      <div class="gallery-item reveal" data-cat="iron">
-        <img src="assets/fence-iron-07.jpg" alt="Iron Fence Spear Tops" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Iron Fence · Spear Tops</p>
-          <p class="gallery-caption-loc">GTA, ON · Iron / Steel</p>
-        </div></div>
-      </div>
-
-      <div class="gallery-item reveal delay-1" data-cat="iron">
-        <img src="assets/fence-iron-08.jpg" alt="Iron Fence Stone Pillars" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Iron Fence · Stone Pillars</p>
-          <p class="gallery-caption-loc">GTA, ON · Iron / Steel</p>
-        </div></div>
-      </div>
-
-      <div class="gallery-item reveal delay-2" data-cat="iron">
-        <img src="assets/fence-iron-09.jpg" alt="Ornate Iron Fence Decorative Scrollwork" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Ornate Iron Fence · Scrollwork</p>
-          <p class="gallery-caption-loc">GTA, ON · Iron / Steel</p>
-        </div></div>
-      </div>
 
       <!-- ── Chain link extra ── -->
-      <div class="gallery-item reveal" data-cat="chainlink">
-        <img src="assets/fence-chainlink-13.jpg" alt="Black Chain Link Large Yard" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Black Chain Link · Large Yard</p>
-          <p class="gallery-caption-loc">GTA, ON · Chain Link</p>
-        </div></div>
-      </div>
-
       <div class="gallery-item reveal delay-1" data-cat="chainlink">
         <img src="assets/fence-chainlink-14.jpg" alt="Chain Link Culvert Enclosure" loading="lazy" />
         <div class="gallery-overlay"><div>
           <p class="gallery-caption-title">Chain Link · Infrastructure</p>
           <p class="gallery-caption-loc">GTA, ON · Chain Link</p>
-        </div></div>
-      </div>
-
-      <!-- ── Deck extra ── -->
-      <div class="gallery-item reveal delay-2" data-cat="decks">
-        <img src="assets/deck-10.jpg" alt="Cedar Deck Staircase Winter" loading="lazy" />
-        <div class="gallery-overlay"><div>
-          <p class="gallery-caption-title">Cedar Deck Staircase</p>
-          <p class="gallery-caption-loc">GTA, ON · Deck</p>
         </div></div>
       </div>
 
@@ -2176,6 +2194,24 @@
 </footer>
 
 
+<!-- ===================== LIGHTBOX ===================== -->
+<div id="lightbox">
+  <div id="lb-img-wrap">
+    <button id="lb-close" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <img id="lb-img" src="" alt="" />
+    <p id="lb-caption"></p>
+  </div>
+  <button id="lb-prev" aria-label="Previous image">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <button id="lb-next" aria-label="Next image">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
+  <span id="lb-counter"></span>
+</div>
+
 <!-- ===================== JAVASCRIPT ===================== -->
 <script>
   // Copyright year
@@ -2216,7 +2252,7 @@
   })();
 
   // Swap to hammer when hovering interactive elements
-  const hammerTargets = 'a, button, .btn-primary, .btn-outline, .btn-outline-amber, .btn-submit, .nav-cta, .filter-btn, input, select, textarea, .service-card';
+  const hammerTargets = 'a, button, .btn-primary, .btn-outline, .btn-outline-amber, .btn-submit, .nav-cta, .filter-btn, input, select, textarea, .service-card, #lb-close, #lb-prev, #lb-next, #lightbox';
   document.querySelectorAll(hammerTargets).forEach(el => {
     el.addEventListener('mouseenter', () => {
       isHammer = true;
@@ -2342,6 +2378,20 @@
     showMoreWrap.style.display = 'none';
   });
 
+  // Service card → gallery filter
+  document.querySelectorAll('.service-card[data-gallery-filter]').forEach(card => {
+    card.addEventListener('click', () => {
+      const filter = card.dataset.galleryFilter;
+      const btn = document.querySelector(`.filter-btn[data-filter="${filter}"]`);
+      if (btn) {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        applyFilter(filter);
+      }
+      document.getElementById('gallery').scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
   // Start with featured All view
   applyFilter('all');
 
@@ -2351,6 +2401,122 @@
     document.getElementById('quote-form').style.display = 'none';
     document.getElementById('form-success').style.display = 'block';
   }
+
+  // ── Lightbox ──────────────────────────────────
+  (function () {
+    const lb       = document.getElementById('lightbox');
+    const lbWrap   = document.getElementById('lb-img-wrap');
+    const lbImg    = document.getElementById('lb-img');
+    const lbCap    = document.getElementById('lb-caption');
+    const lbClose  = document.getElementById('lb-close');
+    const lbPrev   = document.getElementById('lb-prev');
+    const lbNext   = document.getElementById('lb-next');
+    const lbCtr    = document.getElementById('lb-counter');
+
+    let images = [];
+    let cur    = 0;
+    let isOpen = false;
+
+    // Inject zoom-hint icon into every clickable item
+    const zoomSVG = `<span class="lb-zoom-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></span>`;
+    document.querySelectorAll('#featured-grid .feat-item, .gallery-item').forEach(el => {
+      el.insertAdjacentHTML('beforeend', zoomSVG);
+    });
+
+    // Add gallery items to hammer cursor targets
+    document.querySelectorAll('#featured-grid .feat-item, .gallery-item').forEach(el => {
+      el.addEventListener('mouseenter', () => { isHammer = true;  cursor.classList.add('is-hammer'); });
+      el.addEventListener('mouseleave', () => { isHammer = false; cursor.classList.remove('is-hammer'); });
+    });
+
+    function buildList() {
+      images = [];
+      document.querySelectorAll('#featured-grid .feat-item').forEach(item => {
+        const img   = item.querySelector('img');
+        const title = item.querySelector('.gallery-caption-title')?.textContent || '';
+        const loc   = item.querySelector('.gallery-caption-loc')?.textContent   || '';
+        images.push({ src: img.src, alt: img.alt, caption: [title, loc].filter(Boolean).join(' · ') });
+      });
+      document.querySelectorAll('.gallery-item').forEach(item => {
+        const img   = item.querySelector('img');
+        const title = item.querySelector('.gallery-caption-title')?.textContent || '';
+        const loc   = item.querySelector('.gallery-caption-loc')?.textContent   || '';
+        images.push({ src: img.src, alt: img.alt, caption: [title, loc].filter(Boolean).join(' · ') });
+      });
+    }
+
+    function updateCounter() {
+      lbCtr.textContent = (cur + 1) + ' / ' + images.length;
+    }
+
+    function openAt(idx) {
+      buildList();
+      cur = ((idx % images.length) + images.length) % images.length;
+      lbImg.src         = images[cur].src;
+      lbImg.alt         = images[cur].alt;
+      lbCap.textContent = images[cur].caption;
+      updateCounter();
+      lb.classList.add('lb-open');
+      isOpen = true;
+      document.body.style.overflow = 'hidden';
+    }
+
+    function close() {
+      lb.classList.add('lb-closing');
+      lb.classList.remove('lb-open');
+      setTimeout(() => {
+        lb.classList.remove('lb-closing');
+        lbImg.src = '';
+        isOpen    = false;
+        document.body.style.overflow = '';
+      }, 400);
+    }
+
+    function navigate(dir) {
+      lbWrap.classList.add('lb-nav-out');
+      setTimeout(() => {
+        cur = ((cur + dir + images.length) % images.length);
+        lbImg.src         = images[cur].src;
+        lbCap.textContent = images[cur].caption;
+        updateCounter();
+        lbWrap.classList.remove('lb-nav-out');
+        lbWrap.classList.add('lb-nav-in');
+        setTimeout(() => lbWrap.classList.remove('lb-nav-in'), 300);
+      }, 190);
+    }
+
+    // Click delegation: featured items
+    document.getElementById('featured-grid').addEventListener('click', e => {
+      const item = e.target.closest('.feat-item');
+      if (!item) return;
+      buildList();
+      const img = item.querySelector('img');
+      const idx = images.findIndex(x => x.src === img.src);
+      openAt(idx >= 0 ? idx : 0);
+    });
+
+    // Click delegation: gallery items
+    document.getElementById('gallery-grid').addEventListener('click', e => {
+      const item = e.target.closest('.gallery-item');
+      if (!item) return;
+      buildList();
+      const img = item.querySelector('img');
+      const idx = images.findIndex(x => x.src === img.src);
+      openAt(idx >= 0 ? idx : 0);
+    });
+
+    lbClose.addEventListener('click', close);
+    lb.addEventListener('click', e => { if (e.target === lb) close(); });
+    lbPrev.addEventListener('click', () => navigate(-1));
+    lbNext.addEventListener('click', () => navigate(1));
+
+    document.addEventListener('keydown', e => {
+      if (!isOpen) return;
+      if (e.key === 'Escape')     close();
+      if (e.key === 'ArrowLeft')  navigate(-1);
+      if (e.key === 'ArrowRight') navigate(1);
+    });
+  })();
 </script>
 
 </body>
