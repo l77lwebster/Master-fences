@@ -981,8 +981,12 @@
       border: 2px solid rgba(200,130,58,0.5);
       color: var(--amber);
       display: flex; align-items: center; justify-content: center;
-      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s, opacity 0.2s;
       transform: translateY(-50%);
+      opacity: 0; pointer-events: none;
+    }
+    #lightbox.lb-open #lb-prev, #lightbox.lb-open #lb-next {
+      opacity: 1; pointer-events: auto;
     }
     #lb-prev { left: 1.25rem; }
     #lb-next { right: 1.25rem; }
