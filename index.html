@@ -2472,8 +2472,7 @@
         headers: { 'Accept': 'application/json' }
       });
       if (res.ok) {
-        form.style.display = 'none';
-        document.getElementById('form-success').style.display = 'block';
+        window.location.href = 'thank-you.html';
       } else {
         btn.textContent = 'Submit Quote Request';
         btn.disabled = false;
